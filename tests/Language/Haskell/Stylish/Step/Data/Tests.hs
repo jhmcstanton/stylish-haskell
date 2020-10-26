@@ -71,6 +71,9 @@ tests = testGroup "Language.Haskell.Stylish.Step.Data.Tests"
     , testCase "case 56" case56
     , testCase "case 57" case57
     , testCase "case 58" case58
+    , testCase "case 59" case59
+    , testCase "case 60" case60
+    , testCase "case 61" case61
     ]
 
 case00 :: Assertion
@@ -1289,6 +1292,48 @@ case58 = expected @=? testStep (step sameIndentStyle) input
       , "               }"
       ]
 
+    expected = input
+
+-- | Unicode in symbol should not break formatting
+--
+-- See https://github.com/jaspervdj/stylish-haskell/issues/326
+case59 :: Assertion
+case59 = expected @=? testStep (step sameSameStyle) input
+  where
+    input = unlines
+      [ "module Herp where"
+      , ""
+
+      , "data Foo a = Foo \"кек\""
+      ]
+    expected = input
+
+-- | Unicode in type parameter should not break formatting
+--
+-- See https://github.com/jaspervdj/stylish-haskell/issues/326
+case60 :: Assertion
+case60 = expected @=? testStep (step sameSameStyle) input
+  where
+    input = unlines
+      [ "module Herp where"
+      , ""
+
+      , "data Foo кек = Foo кек"
+      ]
+    expected = input
+
+-- | Unicode in type parameter should not break formatting
+--
+-- See https://github.com/jaspervdj/stylish-haskell/issues/326
+case61 :: Assertion
+case61 = expected @=? testStep (step sameSameStyle) input
+  where
+    input = unlines
+      [ "module Herp where"
+      , ""
+
+      , "newtype Foo кек = Foo \"кек\""
+      ]
     expected = input
 
 sameSameStyle :: Config
